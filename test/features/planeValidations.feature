@@ -1,9 +1,7 @@
 Feature: Store plane in hangar (success/failure)
-    # When posting, and removing, planes all cases in this feature require the IDs provided to the respective endpoints to be valid
 
     Background: Hangars state
-        # Most cases in this feature require only one hangar, but since some require two, we create two hangars from the get-go
-        Given two EMPTY hangars exist
+        Given five EMPTY hangars exist
 
     Rule: Plane name validation
 

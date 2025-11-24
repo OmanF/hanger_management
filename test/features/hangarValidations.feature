@@ -1,8 +1,7 @@
 Feature: Manage Hangars (success/failure)
-    # When posting, and removing, planes all cases in this feature require the IDs provided to the respective endpoints to be valid
 
     Background: Hangars state
-        Given two EMPTY hangars exist
+        Given five EMPTY hangars exist
 
     Rule: Hangar plane capacity limit validation
 
