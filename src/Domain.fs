@@ -10,6 +10,9 @@ namespace HangerManager
 
 [<AutoOpen>]
 module Domain =
+    [<Measure>]
+    type mID
+
     type Errors =
         | PlaneNameError of string
         | PlaneMissilesListError of string
@@ -22,42 +25,21 @@ module Domain =
         | PlaneNotFoundError of string
         | InvalidInputError of string
 
-    type Plane = { Name: string; Missiles: int list }
+    // Intentionally making missiles IDs "plain" `int`s, albeit `[<Measure>]` type `mID` and not a constrained `Nat`
+    // While less F#-idiomatic - exercising M.I.S.U. - "Make Unpresentable State Invalid"
+    // using plain `int`s, and validating them (e.g., forming a set) at the boundaries (e.g., API layer) is more pragmatic
+    // especially considering that constrained types also require private builders **and** extractors, which would complicate using them
+    // Be smart about it, but when the trade-off favors it, choose pragmatism over idioms
+    type Plane =
+        { Name: string
+          Missiles: Set<int<mID>> }
 
     type Hangar = Plane list
 
     type SystemState =
         { Hangars: Hangar array
-          GlobalMissileSet: Set<int> }
+          GlobalMissileSet: Set<int<mID>> }
 
     type SystemMessage =
         | GetState of AsyncReplyChannel<SystemState>
         | UpdateHangar of int * Hangar
-
-    let systemAgentMutable =
-        MailboxProcessor<SystemMessage>.Start(fun inbox ->
-            // Mutable state - Acceptable due to this being a `MailboxProcessor`, which only responds to one message at a time, ordered on time of arrival
-            let initialState =
-                { Hangars = Array.init 5 (fun _ -> [])
-                  GlobalMissileSet = Set.empty }
-
-            let mutable globalMissileSet = Set.empty
-
-            let rec loop (state: SystemState) =
-                async {
-                    let! msg = inbox.Receive()
-
-                    match msg with
-                    | GetState reply -> reply.Reply state
-                    | UpdateHangar(idx, hangar) ->
-                        state.Hangars.[idx] <- hangar
-                        // Recompute GlobalMissileSet
-                        globalMissileSet <-
-                            state.Hangars
-                            |> Array.collect (fun h -> h |> List.collect (fun p -> p.Missiles) |> List.toArray)
-                            |> Set.ofArray
-
-                    return! loop state
-                }
-
-            loop initialState)
