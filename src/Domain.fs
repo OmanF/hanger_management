@@ -34,12 +34,12 @@ module Domain =
         { Name: string
           Missiles: Set<int<mID>> }
 
-    type Hangar = Plane list
+    type Hangar = Plane array // Actually a `ResizeArray<Plane>`, under-the-hood, but for the constraints of this toy project, there will be no noticeable performance hit
 
     type SystemState =
-        { Hangars: Hangar array
+        { Hangars: Hangar array // Same comment as above
           GlobalMissileSet: Set<int<mID>> }
 
     type SystemMessage =
         | GetState of AsyncReplyChannel<SystemState>
-        | UpdateHangar of int * Hangar
+        | UpdateHangar of (int * Hangar) * AsyncReplyChannel<Result<SystemState, Errors>>
