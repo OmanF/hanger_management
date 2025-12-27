@@ -39,7 +39,7 @@ Feature: Store plane in hangar (success/failure)
                 | [1, 20, 300, 4000, 5000000000]   | success                |
                 | [0]                              | planeMissilesListError |
                 | [-1]                             | planeMissilesListError |
-                | [123456789012345678901234567890] | planeMissilesListError |
+                | [123456789012345678901234567890] | planeMissilesListError | # Each single missile ID must fit an `int64`
                 # Following cases are not possible in F# due to its type system, here for completeness
                 # `null` means actually null value, i.e., no list at all
                 | `null`                           | invalidInputError      |

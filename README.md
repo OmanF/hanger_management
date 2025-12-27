@@ -12,8 +12,8 @@ You are to implement a system to monitor and handle an air force hangar base.
 The system should implement the following behaviors (note that if a behavior is not strictly listed in this spec, make common-sense assumptions):
 
 * The base has 5 hangars that on program initiation are all empty
-* Each hangar can hold **up to** 10 planes (inclusive)
-* Each hangar can hold **up to** 100 missiles (inclusive)
+* Each hangar can hold up to 10 planes (inclusive)
+* Each hangar can hold up to 100 missiles (inclusive)
 * The following missile counts apply to different planes:
   * AM-101 - Up to 12 missiles
   * ILX - Up to 10 missiles

@@ -32,14 +32,14 @@ module Domain =
     // Be smart about it, but when the trade-off favors it, choose pragmatism over idioms
     type Plane =
         { Name: string
-          Missiles: Set<int<mID>> }
+          Missiles: int<mID> list } // Would love to have it `Set<int<mID>>`, but this will be an interactive user input - can't guarantee it will be, need to validate!
 
-    type Hangar = Plane list
+    type Hangar = Plane array // Actually a `ResizeArray<Plane>`, under-the-hood, but for the constraints of this toy project, there will be no noticeable performance hit
 
     type SystemState =
-        { Hangars: Hangar array
+        { Hangars: Hangar array // Same comment as above
           GlobalMissileSet: Set<int<mID>> }
 
     type SystemMessage =
         | GetState of AsyncReplyChannel<SystemState>
-        | UpdateHangar of int * Hangar
+        | UpdateHangar of (int * Hangar) * AsyncReplyChannel<Result<SystemState, Errors>>
